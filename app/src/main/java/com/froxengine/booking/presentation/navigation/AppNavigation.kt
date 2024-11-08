@@ -1,14 +1,14 @@
 package com.froxengine.booking.presentation.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-import com.froxengine.booking.presentation.screens.client.RegisterClientPreview
+import com.froxengine.booking.presentation.screens.PaymentMethodsScreen
+import com.froxengine.booking.presentation.screens.PaymentQrScreen
 import com.froxengine.booking.presentation.screens.client.RegisterClientScreen
 import com.froxengine.booking.presentation.screens.detail.SportCenterReservationScreen
 import com.froxengine.booking.presentation.screens.home.HomeScreen
@@ -27,8 +27,17 @@ fun AppNavigation(homeViewModel: HomeViewModel, navController: NavHostController
             SportCenterReservationScreen(navController, homeViewModel)
         }
         composable(route = AppScreen.RegisterClientScreen.route) {
-            RegisterClientScreen( homeViewModel.clientName, homeViewModel.isLoading) { doc, type ->
+            RegisterClientScreen({ navController.navigate(AppScreen.PaymentsScreen.route) }, homeViewModel.orderState, homeViewModel.clientName, homeViewModel.isLoading) { doc, type ->
                 homeViewModel.search(doc, type)
+            }
+        }
+        composable(route = AppScreen.PaymentQrScreen.route) {
+            val orderState by homeViewModel.orderState.collectAsState()
+            PaymentQrScreen( orderState , homeViewModel.clientName) { navController.popBackStack() }
+        }
+        composable(route= AppScreen.PaymentsScreen.route) {
+            PaymentMethodsScreen( homeViewModel.orderState, homeViewModel.clientName, { navController.popBackStack() } ) {
+                navController.navigate(AppScreen.PaymentQrScreen.route)
             }
         }
 //        composable(

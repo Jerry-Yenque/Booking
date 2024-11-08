@@ -19,6 +19,7 @@ import com.froxengine.booking.data.model.ContactDto
 import com.froxengine.booking.data.model.DNIDto
 import com.froxengine.booking.data.model.DniClient
 import com.froxengine.booking.data.model.IdentificationType
+import com.froxengine.booking.data.model.Order
 import com.froxengine.booking.data.model.RUCDto
 import com.froxengine.booking.data.model.Schedule
 import com.froxengine.booking.data.model.SportCenter
@@ -26,7 +27,12 @@ import com.froxengine.booking.data.model.TimeSlot
 import com.froxengine.booking.data.repository.ContactService
 import com.froxengine.booking.domain.repository.ScheduleRepository
 import com.froxengine.booking.domain.repository.SportCenterRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -53,6 +59,9 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
         }
     }
 
+    private val _orderState = MutableStateFlow(Order())
+    val orderState: StateFlow<Order> = _orderState.asStateFlow()
+
     var sportCenter: List<SportCenter> by mutableStateOf(emptyList())
         private set
 
@@ -60,9 +69,6 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
         private set
 
     var schedules: Schedule? by mutableStateOf(null)
-        private set
-
-    var timeSelected: String? by mutableStateOf(null)
         private set
 
     var timeSlots: List<TimeSlot> by mutableStateOf(emptyList())
@@ -89,8 +95,14 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
     }
 
     fun setSlotsBySelectedDate(seletedDate: String) {
-        timeSelected = seletedDate
-        timeSlots = schedules?.getTimeSlotsForDate(timeSelected.toString()) ?: emptyList()
+        Log.v("Booking", "selectedDate parameter value: $seletedDate")
+        _orderState.update { currentOrder ->
+            currentOrder.copy(timeSelected=seletedDate)
+        }
+        Log.v("Booking", "selectedDate _orderState value: $seletedDate")
+//        timeSelected = seletedDate
+        timeSlots = schedules?.getTimeSlotsForDate(_orderState.value.timeSelected) ?: emptyList()
+        Log.v("Booking", "timeSlots value: $timeSlots")
     }
 
     fun sportCenterSelected(sportCenter: SportCenter) {
@@ -147,7 +159,7 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
                     } else {
                         this.rucDto = null
                         this.dniDto = dniDto
-                        clientName = this.dniDto?.name ?: ""
+                        clientName = this.dniDto?.fullName ?: ""
                     }
                     isLoading = false
                 }
@@ -183,6 +195,15 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
                 null // Ignora las fechas no válidas
             }
         } ?:  emptyList()
+    }
+
+    fun calculateTotal(quantity: Int) {
+        _orderState.update { currentOrder ->
+            Log.v("Booking", "current total: ${this.sportCenterSelected?.price} * ${BigDecimal(quantity)}")
+            currentOrder.copy(total = ((this.sportCenterSelected?.price ?: BigDecimal(0.00)) * (BigDecimal(quantity))).toString() ?: "0.00")
+        }
+
+        Log.v("Booking", "current total: ${_orderState.value.total}")
     }
 
 

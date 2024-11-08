@@ -1,7 +1,6 @@
 package com.froxengine.booking.presentation.screens.client
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,32 +20,35 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.froxengine.booking.R
 import com.froxengine.booking.data.model.IdentificationType
+import com.froxengine.booking.data.model.Order
+import com.froxengine.booking.presentation.components.LoadingAnimation
 import com.froxengine.booking.presentation.ui.theme.BooKingTheme
-import kotlin.math.max
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterClientScreen(
+    navigateToPayments: ()-> Unit,
+    order: StateFlow<Order>,
     clientName: String,
     isLoading: Boolean,
-    search: (String, IdentificationType) -> Unit
+    search: (String, IdentificationType) -> Unit,
 ) {
+    val orderStatus by order.collectAsState()
     var selectedDocumentType by remember { mutableStateOf("Tipo de documento") }
     var documentNumber by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
@@ -152,15 +154,20 @@ fun RegisterClientScreen(
 
 //        Spacer(modifier = Modifier.height(32.dp))
 
-        if (isLoading) {
-            Image(
-                modifier = Modifier.size(150.dp),
-                painter = painterResource(R.drawable.loading_img),
-                contentDescription = stringResource(R.string.loading)
-            )
-        }
-        if (!isLoading && clientName.isNotEmpty()) {
-            Text(modifier = Modifier.padding(top = 32.dp), text = clientName, fontSize = 34.sp, textAlign = TextAlign.Center, lineHeight = 36.sp)
+        Box(modifier = Modifier.height(150.dp)) {
+            if (isLoading) {
+
+                LoadingAnimation(Modifier.size(150.dp))
+            }
+            if (!isLoading && clientName.isNotEmpty()) {
+                Text(
+                    modifier = Modifier.padding(top = 32.dp),
+                    text = clientName,
+                    fontSize = 34.sp,
+                    textAlign = TextAlign.Center,
+                    lineHeight = 36.sp
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -180,17 +187,19 @@ fun RegisterClientScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Date and payment button
-        Text(text = "27/09/2024", fontSize = 24.sp)
+        Text(text = orderStatus.timeSelected, fontSize = 24.sp)
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Button(onClick = { /* Action for payment */ }) {
+        Button(
+            enabled = clientName.isNotEmpty(),
+            onClick = navigateToPayments) {
             Text("PROCEDER AL PAGO")
         }
 
         Spacer(modifier = Modifier.height(40.dp))
 
-        Text(text = "Total: 100.00", fontSize = 18.sp)
+        Text(text = "Total: S/${String.format("%.2f", orderStatus.total.toDouble())}", fontSize = 18.sp)
     }
 }
 
@@ -200,6 +209,17 @@ fun RegisterClientScreen(
 @Composable
 fun RegisterClientPreview() {
     BooKingTheme {
-        RegisterClientScreen( "" , false , {doc, type ->})
+        val fakeOrder = Order(
+            sportCenterSelected = "Example Sport Center",
+            timeSelected = "10:00 AM - 11:00 AM",
+            timeSlots = emptyList(),
+            total = "20"
+        )
+        RegisterClientScreen(
+            {},
+            MutableStateFlow(fakeOrder),
+            "" ,
+            false
+        ) { _, _ -> }
     }
 }

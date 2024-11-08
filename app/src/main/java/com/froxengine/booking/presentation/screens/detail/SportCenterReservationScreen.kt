@@ -1,6 +1,6 @@
 package com.froxengine.booking.presentation.screens.detail
 
-import android.widget.Toast
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,15 +23,16 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -46,6 +47,9 @@ import java.time.LocalDate
 
 @Composable
 fun SportCenterReservationScreen(navController: NavHostController, homeViewModel: HomeViewModel) { // sportCenterId: String
+    val orderState by homeViewModel.orderState.collectAsState()
+
+
     val sportCenter = homeViewModel.sportCenterSelected
     val context = LocalContext.current
     LaunchedEffect(sportCenter) {
@@ -70,6 +74,14 @@ fun SportCenterReservationScreen(navController: NavHostController, homeViewModel
     val selectedTimeSlots = remember { mutableStateListOf<String>() }
     val costPerHour: BigDecimal = homeViewModel.sportCenterSelected?.price ?: BigDecimal(50.00)
 
+    LaunchedEffect(selectedTimeSlots) {
+        snapshotFlow { selectedTimeSlots.toList() }
+            .collect { newList ->
+                Log.v("Booking","showTimeSlots changed to $newList")
+                homeViewModel.calculateTotal(newList.size)
+            }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -92,7 +104,7 @@ fun SportCenterReservationScreen(navController: NavHostController, homeViewModel
 
         // Fecha
         OutlinedTextField(
-            value = homeViewModel.timeSelected ?: "Selecciona una fecha",
+            value = orderState.timeSelected,
             onValueChange = {},
             label = { Text("Fecha") },
             readOnly = true,
@@ -120,7 +132,7 @@ fun SportCenterReservationScreen(navController: NavHostController, homeViewModel
 
         // Horario Disponible
         Button(
-            enabled= homeViewModel.timeSelected?.isNotEmpty() ?: false,
+            enabled= orderState.timeSelected.isNotEmpty(),
             onClick = { showTimeSlots = true },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -155,7 +167,7 @@ fun SportCenterReservationScreen(navController: NavHostController, homeViewModel
                 },
                 confirmButton = {
                     TextButton(onClick = { showTimeSlots = false }) {
-                        Text(text = "Aceptar", color = Color.Green)
+                        Text(text = "Aceptar")
                     }
                 },
 //                dismissButton = {
@@ -184,7 +196,7 @@ fun SportCenterReservationScreen(navController: NavHostController, homeViewModel
         Spacer(modifier = Modifier.height(30.dp))
 
         // Total de costo
-        Text(text = "Total: S/${BigDecimal(selectedTimeSlots.size) * costPerHour}")
+        Text(text = "Total: S/${String.format("%.2f", orderState.total.toDouble())}")
     }
 }
 
