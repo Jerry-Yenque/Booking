@@ -207,6 +207,11 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
     }
 
 
+    fun resetOrderState() {
+        _orderState.value = Order()
+        clientName = ""
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

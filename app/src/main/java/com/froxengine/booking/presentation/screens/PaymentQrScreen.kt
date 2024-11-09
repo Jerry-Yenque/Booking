@@ -1,8 +1,10 @@
 package com.froxengine.booking.presentation.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,9 +38,10 @@ import androidx.compose.ui.unit.sp
 import com.froxengine.booking.R
 import com.froxengine.booking.data.model.Order
 import com.froxengine.booking.presentation.components.LoadingAnimation
+import com.froxengine.booking.presentation.components.SuccessDialog
 
 @Composable
-fun PaymentQrScreen(orderState: Order, clientName: String, navigateBack: ()-> Unit, ) {
+fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, navigateBack: ()-> Unit, ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -75,9 +82,9 @@ fun PaymentQrScreen(orderState: Order, clientName: String, navigateBack: ()-> Un
                 Spacer(modifier = Modifier.height(2.dp))
 
                 Image(
+                    modifier = Modifier.size(200.dp),
                     painter = painterResource(id = R.drawable.imagen01),
-                    contentDescription = "Imagen de la aplicación",
-                    modifier = Modifier.size(200.dp)
+                    contentDescription = "Imagen de la aplicación"
                 )
                 Text(
                     text = "y escanea este código QR",
@@ -87,13 +94,25 @@ fun PaymentQrScreen(orderState: Order, clientName: String, navigateBack: ()-> Un
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+                var showDialog: Boolean by remember { mutableStateOf(false) }
 
+                if (showDialog) {
+                    SuccessDialog(clientName = clientName, orderState = orderState) {
+                        showDialog = false
+                        goHome()
+                    }
+                }
                 Image(
                     painter = painterResource(id = R.drawable.codigoqr),
                     contentDescription = "Código QR",
                     modifier = Modifier
                         .size(200.dp)
+                        .clickable {
+                            Log.v("Booking", "click en qr")
+                            showDialog = true
+                        }
                 )
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -171,5 +190,5 @@ fun PaymentQrScreenPreview() {
         timeSlots = emptyList(),
         total = "20"
     )
-    PaymentQrScreen(fakeOrder, "Angles Payano, Neil") {}
+    PaymentQrScreen({}, fakeOrder, "Angles Payano, Neil") {}
 }

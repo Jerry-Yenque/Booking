@@ -13,7 +13,7 @@ class AuthInterceptor : Interceptor {
     }
 
     companion object {
-        var accessToken: String = "eyJhbGciOiJIUzUxMiJ9.eyJwZXJtaXNzaW9ucyI6WyJBRE1JTiJdLCJzdWIiOiJLaW9zY28iLCJpYXQiOjE3MzEwMzI1MDIsImV4cCI6MTczMTEzMjUwMn0.DyVKw48a7Em5p4dj6jYJAKV4Jv5ufi-3zae-P8Y1WDUQ69Ebb1B2BLbiHxq6hLTIzTsnN344OdQJTlYGa5ekuQ"
-        var refreshToken: String = "UIQmXsuuTstOWnbyUdwPcuF7HmZ6NF7yWOPrKoLXmm7FNgGCs1cRJL0QgrhUhm51m7B9Ug9QZEm38b5FqBmTovzKMtrdcLgVyyRey6AVF2Lv4SQ4ASLbeGCWJAGby8sl"
+        var accessToken: String = "eyJhbGciOiJIUzUxMiJ9.eyJwZXJtaXNzaW9ucyI6WyJBRE1JTiJdLCJzdWIiOiJLaW9zY28iLCJpYXQiOjE3MzExMTE1NjgsImV4cCI6MTczMTIxMTU2OH0.Tkn4O9xPaDxs90IC9t5AmaqctwmNMXsFMIcawjRhYozhORteQ-RoL2dpRQULph5glNi4Pzdf3pPyb2LI5zrG7g"
+        var refreshToken: String = "T4qCJwccFzSBseQuoUfWZMSK6SvbOh8TPzyK7GkKGQi7dZZBOIEKjtmWLhIZpBDKkdHwkObIPYgO2N5AffuftrIoKPPyaApcAqxHGmLTJQzKbYWru2Ak5fMjx8h2tkBK"
     }
 }

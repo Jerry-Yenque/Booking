@@ -33,7 +33,10 @@ fun AppNavigation(homeViewModel: HomeViewModel, navController: NavHostController
         }
         composable(route = AppScreen.PaymentQrScreen.route) {
             val orderState by homeViewModel.orderState.collectAsState()
-            PaymentQrScreen( orderState , homeViewModel.clientName) { navController.popBackStack() }
+            PaymentQrScreen({
+                homeViewModel.resetOrderState()
+                navController.navigate(AppScreen.HomeScreen.route)
+                            }, orderState , homeViewModel.clientName) { navController.popBackStack() }
         }
         composable(route= AppScreen.PaymentsScreen.route) {
             PaymentMethodsScreen( homeViewModel.orderState, homeViewModel.clientName, { navController.popBackStack() } ) {
