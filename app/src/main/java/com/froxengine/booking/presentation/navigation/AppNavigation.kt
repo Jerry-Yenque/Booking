@@ -55,7 +55,8 @@ fun AppNavigation(homeViewModel: HomeViewModel = viewModel(), navController: Nav
             SettingsScreen({ homeViewModel.getSportCenters() })
         }
         composable(route = AppScreen.CardPaymentScreen.route) {
-            CardPayment()
+            val orderState = homeViewModel.orderState.collectAsState()
+            CardPayment(orderState.value.total)
         }
 //        composable(
 //            route = AppScreen.DetailScreen.route,
