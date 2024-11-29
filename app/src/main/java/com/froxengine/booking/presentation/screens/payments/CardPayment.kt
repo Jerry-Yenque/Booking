@@ -32,9 +32,9 @@ fun CardPayment(total: String) {
     var titularName by remember {
         mutableStateOf("")
     }
-//    var expirationDate by remember {
-//        mutableStateOf("")
-//    }
+    var address by remember {
+        mutableStateOf("")
+    }
 
     var expirationDate by remember { mutableStateOf(TextFieldValue("")) }
     Column(modifier = Modifier.padding(16.dp)) {
@@ -99,15 +99,19 @@ fun CardPayment(total: String) {
         // Billing Address
         Column(modifier = Modifier.padding(top = 16.dp)) {
             TextField(
-                value = "",
-                onValueChange = {},
+                value = address,
+                onValueChange = {address = it},
                 label = { Text("Dirección") },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(modifier = Modifier.height(8.dp))
+
+            var postalCode by remember {
+                mutableStateOf("")
+            }
             TextField(
-                value = "",
-                onValueChange = {},
+                value = postalCode,
+                onValueChange = {postalCode = it},
                 label = { Text("Código postal") },
                 modifier = Modifier.fillMaxWidth()
             )
