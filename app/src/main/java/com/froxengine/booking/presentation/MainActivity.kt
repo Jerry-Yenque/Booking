@@ -23,15 +23,7 @@ class MainActivity : ComponentActivity() {
         setupServicesAndViewModel()
         setContent {
             BooKingTheme {
-//                homeViewModel = viewModel(factory = HomeViewModel.Factory)
                 AppNavigation(homeViewModel)
-//                HomeScreen()
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
             }
         }
     }
