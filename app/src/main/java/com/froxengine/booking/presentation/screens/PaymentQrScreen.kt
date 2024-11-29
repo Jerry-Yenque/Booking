@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -39,6 +40,7 @@ import com.froxengine.booking.R
 import com.froxengine.booking.data.model.Order
 import com.froxengine.booking.presentation.components.LoadingAnimation
 import com.froxengine.booking.presentation.components.SuccessDialog
+import com.froxengine.booking.presentation.components.TimerScreen
 
 @Composable
 fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, navigateBack: ()-> Unit, ) {
@@ -47,6 +49,7 @@ fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, na
             .fillMaxSize()
 
     ) {
+        var showDialog: Boolean by remember { mutableStateOf(false) }
         Spacer(modifier = Modifier.height(16.dp))
         // Primer Box (65% del espacio)
         Box(
@@ -54,6 +57,7 @@ fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, na
                 .weight(0.65f)
                 .fillMaxHeight()
         ) {
+            TimerScreen(modifier = Modifier.size(40.dp).align(Alignment.TopEnd), initialTime = 120, navController = {goHome()})
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -78,23 +82,22 @@ fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, na
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-
-                Spacer(modifier = Modifier.height(2.dp))
-
+                Spacer(modifier = Modifier.height(12.dp))
                 Image(
-                    modifier = Modifier.size(200.dp),
+                    modifier = Modifier.width(200.dp).height(100.dp),
                     painter = painterResource(id = R.drawable.imagen01),
                     contentDescription = "Imagen de la aplicación"
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "y escanea este código QR",
+                    text = "y yapea a este código QR",
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 18.sp),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
-                var showDialog: Boolean by remember { mutableStateOf(false) }
+
 
                 if (showDialog) {
                     SuccessDialog(clientName = clientName, orderState = orderState) {
@@ -103,14 +106,10 @@ fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, na
                     }
                 }
                 Image(
-                    painter = painterResource(id = R.drawable.codigoqr),
+                    painter = painterResource(id = R.drawable.qr1),
                     contentDescription = "Código QR",
                     modifier = Modifier
                         .size(200.dp)
-                        .clickable {
-                            Log.v("Booking", "click en qr")
-                            showDialog = true
-                        }
                 )
 
 
@@ -166,15 +165,14 @@ fun PaymentQrScreen(goHome: ()-> Unit, orderState: Order, clientName: String, na
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = navigateBack,
+                    onClick = { showDialog = true},
                     modifier = Modifier
                         .fillMaxWidth(0.7f),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Gray),
                     border = BorderStroke(2.dp, Color.Black),
                     shape = RoundedCornerShape(16.dp),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp)
                 ) {
-                    Text("CANCELAR", color = Color.Black)
+                    Text("CONFIRMAR PAGO", color = Color.Black)
                 }
             }
         }

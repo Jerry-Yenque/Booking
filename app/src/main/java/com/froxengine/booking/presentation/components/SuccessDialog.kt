@@ -38,7 +38,7 @@ fun SuccessDialog(clientName: String, orderState: Order, onConfirm: ()-> Unit) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = "Resevación Exitosa", fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            Text(text = "Resevación en Progreso!", fontSize = 24.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(10.dp))
             Text(text = "Presentarse con su documento de identidad la fecha elegida", textAlign = TextAlign.Center)
             Spacer(modifier = Modifier.height(10.dp))

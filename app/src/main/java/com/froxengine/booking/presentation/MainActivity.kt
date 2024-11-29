@@ -5,14 +5,10 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.froxengine.booking.data.repository.ContactService
 import com.froxengine.booking.presentation.navigation.AppNavigation
-import com.froxengine.booking.presentation.screens.home.HomeScreen
 import com.froxengine.booking.presentation.screens.home.HomeViewModel
 import com.froxengine.booking.presentation.ui.theme.BooKingTheme
 
@@ -39,4 +35,5 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 

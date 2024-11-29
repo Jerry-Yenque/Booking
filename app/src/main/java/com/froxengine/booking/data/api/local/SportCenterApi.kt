@@ -10,7 +10,11 @@ interface SportCenterApi {
 }
 
 object SportCenterService {
-    val retrofit : SportCenterApi by lazy {
+    var retrofit : SportCenterApi =
         RetrofitProvider.getRetrofit(includeLoggingInterceptor=false).create(SportCenterApi::class.java)
+        private set
+
+    fun reloadRetrofit() {
+        retrofit = RetrofitProvider.getRetrofit(false).create(SportCenterApi::class.java)
     }
 }

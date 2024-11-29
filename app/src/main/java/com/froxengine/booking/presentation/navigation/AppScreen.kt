@@ -6,4 +6,6 @@ sealed class AppScreen(val route: String) {
     data object RegisterClientScreen: AppScreen("registerClient")
     data object PaymentQrScreen: AppScreen("payment_qr")
     data object PaymentsScreen: AppScreen("payments_screen")
+    data object SettingsScreen: AppScreen("settings_screen")
+    data object CardPaymentScreen: AppScreen("card_screen")
 }

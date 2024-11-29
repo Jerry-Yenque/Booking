@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.StateFlow
 
 @Composable
     fun PaymentMethodsScreen(
+    navigateCardPayment: () -> Unit,
     order: StateFlow<Order>,
     clientName: String,
     navigateBack: () -> Unit,
@@ -141,7 +142,7 @@ import kotlinx.coroutines.flow.StateFlow
                 // Opción de Pago con Tarjeta
                 Card(
                     modifier = Modifier
-                        .clickable { selectedOption = "Card" }
+                        .clickable { navigateCardPayment() }
                         .padding(8.dp)
                         .weight(1f), // Ocupa el mismo espacio
                     shape = RoundedCornerShape(8.dp),
@@ -218,6 +219,7 @@ fun PreviewPaymentMethodsScreen() {
         total = "20"
     )
     PaymentMethodsScreen(
+        navigateCardPayment = {},
         MutableStateFlow(fakeOrder),
         "Angles Payano, Neil",
         navigateBack = {  }) {

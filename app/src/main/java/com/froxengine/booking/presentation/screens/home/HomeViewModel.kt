@@ -15,6 +15,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.froxengine.booking.BooKing
+import com.froxengine.booking.core.Util
 import com.froxengine.booking.data.model.ContactDto
 import com.froxengine.booking.data.model.DNIDto
 import com.froxengine.booking.data.model.DniClient
@@ -51,7 +52,7 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
             serviceBinder: IBinder
         ) {
             contactService = (serviceBinder as ContactService.ServiceBinder).service
-            Log.v("Booking", "ContactService connected")
+            Log.v(Util.TAG, "ContactService connected")
         }
 
         override fun onServiceDisconnected(arg0: ComponentName) {
@@ -81,14 +82,17 @@ class HomeViewModel(private val sportCenterRepository: SportCenterRepository, pr
         private set
 
     init {
+        Log.d(Util.TAG, "init viewModel")
         getSportCenters()
     }
 
-    private fun getSportCenters() {
+    fun getSportCenters() {
+        Log.d(Util.TAG, "inside getSportCenters")
         viewModelScope.launch {
             try {
                 sportCenter = sportCenterRepository.getSportCenters()
             } catch (e: Exception) {
+                sportCenter = emptyList()
                 e.printStackTrace()
             }
         }

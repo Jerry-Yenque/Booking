@@ -48,14 +48,15 @@ object RetrofitProvider {
     }
 
     private fun getBaseUrlForSynerPOS(): String {
-        return "http://192.168.1.102:8080"
+        val sharedPreferences = applicationContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return (sharedPreferences.getString("SERVER_HOST", "http://server.host:4000")?.dropLast(4) + "8080") ?: "Missing"
     }
     private fun getBaseUrlFromPreferences(): String { //context: Context
 //        val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 //        Log.d("BooKing","obteniendo preference")
-//        val sharedPreferences = applicationContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-//        return sharedPreferences.getString("SERVER_HOST", "http://server.host:4000")!!
-        return "http://192.168.1.102:4000"
+        val sharedPreferences = applicationContext().getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+        return sharedPreferences.getString("SERVER_HOST", "http://server.host:4000")!!
+//        return "http://192.168.1.102:4000"
 //        return "http://10.0.2.2:4000"
 //            "http://localhost:4000"
     }

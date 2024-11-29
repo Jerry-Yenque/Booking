@@ -18,15 +18,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.froxengine.booking.R
 import com.froxengine.booking.data.model.SportCenter
 import com.froxengine.booking.presentation.screens.home.HomeViewModel
 import com.froxengine.booking.presentation.ui.theme.BooKingTheme
 
 @Composable
-fun SportCenterItem(homeViewModel: HomeViewModel, navController: NavHostController, center: SportCenter, modifier: Modifier = Modifier) {
+fun SportCenterItem(sportCenterSelected: (SportCenter) -> Unit, navigateDetails: () -> Unit, center: SportCenter, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.wrapContentSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -34,29 +36,16 @@ fun SportCenterItem(homeViewModel: HomeViewModel, navController: NavHostControll
         Card(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-//                Image(
-//                    painter = painterResource(id = 0),
-//                    contentDescription = center.name,
-//                    modifier = Modifier
-//                        .size(150.dp)
-//                )
-                Base64Image(sportCenter = center)
-//                Text(
-//                    text = center.name,
-//                    modifier = Modifier
-////                        .fillMaxWidth()
-////                        .wrapContentSize()
-//                        .padding(8.dp),
-//                    style = MaterialTheme.typography.bodyMedium,
-//                    textAlign = TextAlign.Center
-//                )
+                if (center.image ==  "R.drawable.center_1" || center.image.isEmpty()) {
+                    Image(painter = painterResource(id = R.drawable.center_1), contentDescription = "")
+                } else Base64Image(sportCenter = center)
             }
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
             onClick = {
-                homeViewModel.sportCenterSelected(center)
-                navController.navigate("detail")
+                sportCenterSelected(center)
+                navigateDetails()
                       },
             modifier = Modifier
                 .clip(RoundedCornerShape(50))
